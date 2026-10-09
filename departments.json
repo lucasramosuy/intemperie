@@ -1,0 +1,135 @@
+[
+  {
+    "id": "montevideo",
+    "name": "Montevideo",
+    "city": "Montevideo",
+    "latitude": -34.90328,
+    "longitude": -56.18816
+  },
+  {
+    "id": "artigas",
+    "name": "Artigas",
+    "city": "Artigas",
+    "latitude": -30.40431,
+    "longitude": -56.46926
+  },
+  {
+    "id": "canelones",
+    "name": "Canelones",
+    "city": "Canelones",
+    "latitude": -34.52381,
+    "longitude": -56.28215
+  },
+  {
+    "id": "melo",
+    "name": "Cerro Largo",
+    "city": "Melo",
+    "latitude": -32.3682,
+    "longitude": -54.16409
+  },
+  {
+    "id": "colonia-del-sacramento",
+    "name": "Colonia",
+    "city": "Colonia del Sacramento",
+    "latitude": -34.46262,
+    "longitude": -57.83976
+  },
+  {
+    "id": "durazno",
+    "name": "Durazno",
+    "city": "Durazno",
+    "latitude": -33.38063,
+    "longitude": -56.52312
+  },
+  {
+    "id": "trinidad",
+    "name": "Flores",
+    "city": "Trinidad",
+    "latitude": -33.5165,
+    "longitude": -56.89957
+  },
+  {
+    "id": "florida",
+    "name": "Florida",
+    "city": "Florida",
+    "latitude": -34.10032,
+    "longitude": -56.21477
+  },
+  {
+    "id": "minas",
+    "name": "Lavalleja",
+    "city": "Minas",
+    "latitude": -34.37589,
+    "longitude": -55.23771
+  },
+  {
+    "id": "maldonado",
+    "name": "Maldonado",
+    "city": "Maldonado",
+    "latitude": -34.89791,
+    "longitude": -54.95021
+  },
+  {
+    "id": "paysandu",
+    "name": "Paysandú",
+    "city": "Paysandú",
+    "latitude": -32.3171,
+    "longitude": -58.08072
+  },
+  {
+    "id": "fray-bentos",
+    "name": "Río Negro",
+    "city": "Fray Bentos",
+    "latitude": -33.11651,
+    "longitude": -58.31067
+  },
+  {
+    "id": "rivera",
+    "name": "Rivera",
+    "city": "Rivera",
+    "latitude": -30.90534,
+    "longitude": -55.55076
+  },
+  {
+    "id": "rocha",
+    "name": "Rocha",
+    "city": "Rocha",
+    "latitude": -34.47995,
+    "longitude": -54.33064
+  },
+  {
+    "id": "salto",
+    "name": "Salto",
+    "city": "Salto",
+    "latitude": -31.38811,
+    "longitude": -57.95983
+  },
+  {
+    "id": "san-jose-de-mayo",
+    "name": "San José",
+    "city": "San Jose de Mayo",
+    "latitude": -34.33898,
+    "longitude": -56.71339
+  },
+  {
+    "id": "mercedes",
+    "name": "Soriano",
+    "city": "Mercedes",
+    "latitude": -33.2524,
+    "longitude": -58.03047
+  },
+  {
+    "id": "tacuarembo",
+    "name": "Tacuarembó",
+    "city": "Tacuarembó",
+    "latitude": -31.71882,
+    "longitude": -55.97925
+  },
+  {
+    "id": "treinta-y-tres",
+    "name": "Treinta y Tres",
+    "city": "Treinta y Tres",
+    "latitude": -33.231,
+    "longitude": -54.38577
+  }
+]

@@ -1,0 +1,33 @@
+import {condition,ageState} from './weather.mjs';
+import {renderPainting} from './paint.mjs';
+const gallery=document.querySelector('#gallery'),nav=document.querySelector('#miniatures'),status=document.querySelector('#status'),count=document.querySelector('#count'),stamp=document.querySelector('#stamp');
+const reduced=matchMedia('(prefers-reduced-motion: reduce)'),desktop=matchMedia('(min-width:800px)');
+let snapshot,active=0,observers=[],animations=[],target=null;
+const fmt=new Intl.DateTimeFormat('es-UY',{timeZone:'America/Montevideo',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+function select(i,scroll=true){active=i;if(scroll&&!desktop.matches)target=i;document.querySelectorAll('.mini').forEach((b,j)=>b.setAttribute('aria-current',String(i===j)));if(scroll){const el=gallery.children[i];if(desktop.matches)el.scrollIntoView({block:'center',behavior:reduced.matches?'instant':'smooth'});else gallery.scrollTo({left:i*gallery.clientWidth,behavior:reduced.matches?'instant':'smooth'});}const m=nav.children[i];if(m)nav.scrollTo({left:m.offsetLeft-nav.offsetLeft-70,behavior:reduced.matches?'instant':'smooth'});try{localStorage.setItem('intemperie:selected',snapshot.points[i].id);}catch{}}
+function freshness(){if(!snapshot)return;const stale=ageState(snapshot)==='stale';status.classList.toggle('stale',stale);status.textContent=(stale?'Este cielo quedó viejo. Última actualización: ':'Cielo actualizado: ')+fmt.format(new Date(snapshot.generatedAt));stamp.textContent='Snapshot '+fmt.format(new Date(snapshot.generatedAt));}
+function motion(){for(const a of animations){if(reduced.matches||document.hidden||!a.visible)a.animation.pause();else a.animation.play();}}
+function build(data){document.querySelector('.navigation').hidden=false;snapshot=data;gallery.replaceChildren();nav.replaceChildren();for(const o of observers)o.disconnect();observers=[];animations.forEach(a=>a.animation.cancel());animations=[];
+ data.points.forEach((p,i)=>{
+ const article=document.createElement('article');article.className='painting';article.innerHTML='<button class="art" type="button" aria-expanded="false"><canvas aria-hidden="true"></canvas><span class="cross" aria-hidden="true"></span></button><div class="label"><h2></h2><span class="temperature"></span></div><p class="condition"></p><p class="tap">Tocá el pigmento para leer el cielo.</p><div class="data" hidden><p class="metrics"></p><p class="city"></p></div>';
+ article.querySelector('h2').textContent=p.name;article.querySelector('.temperature').textContent=Math.round(p.temperature_2m)+'°';article.querySelector('.condition').textContent=condition(p.weather_code);
+ article.querySelector('.metrics').textContent=`${p.precipitation} mm · ${Math.round(p.wind_speed_10m)} km/h · ${p.cloud_cover}% nubes`;
+ article.querySelector('.city').textContent=`${p.city} · ${fmt.format(new Date(p.time))} · lluvia en ${Math.round(p.interval/60)} min`;
+ const art=article.querySelector('.art'),canvas=art.querySelector('canvas'),detail=article.querySelector('.data');detail.id='datos-'+p.id;art.setAttribute('aria-controls',detail.id);art.setAttribute('aria-label',p.name+': '+Math.round(p.temperature_2m)+' grados, '+condition(p.weather_code)+'. Mostrar datos');
+ art.addEventListener('click',()=>{const open=art.getAttribute('aria-expanded')!=='true';art.setAttribute('aria-expanded',String(open));detail.hidden=!open;article.classList.toggle('revealed',open);art.setAttribute('aria-label',p.name+'. '+(open?'Ocultar':'Mostrar')+' datos');});
+ gallery.append(article);const v=renderPainting(canvas,p);
+ const animation=canvas.animate([{transform:'translate(0,0)'},{transform:`translate(${Math.sin(v.angle)*1.6}px,${Math.cos(v.angle)*1.6}px)`},{transform:'translate(0,0)'}],{duration:15000-v.speed*6500,iterations:Infinity,easing:'ease-in-out'});animation.pause();const info={animation,visible:false};animations.push(info);
+ const visible=new IntersectionObserver(es=>{info.visible=es[0].isIntersecting;motion();},{threshold:.2});visible.observe(canvas);observers.push(visible);
+ const b=document.createElement('button');b.type='button';b.className='mini';b.setAttribute('aria-label',`Ir a ${p.name}`);b.setAttribute('aria-current','false');const small=document.createElement('canvas');small.setAttribute('aria-hidden','true');b.append(small);nav.append(b);renderPainting(small,p,{mini:true});b.addEventListener('click',()=>select(i));
+ });
+ count.textContent=`UY / ${data.points.length} cielos`;freshness();
+ let saved;try{saved=localStorage.getItem('intemperie:selected');}catch{}active=Math.max(0,data.points.findIndex(p=>p.id===saved));select(active,!desktop.matches);motion();
+}
+function valid(s){return s?.points?.length>0&&Number.isFinite(Date.parse(s.generatedAt))&&s.points.every(p=>['temperature_2m','cloud_cover','precipitation','wind_speed_10m','wind_direction_10m','weather_code'].every(k=>Number.isFinite(p[k]))&&typeof p.id==='string'&&typeof p.name==='string'&&Number.isFinite(Date.parse(p.time)));}
+async function load(){status.textContent='Buscando el último cielo…';let cached;try{cached=JSON.parse(localStorage.getItem('intemperie:weather'));if(valid(cached))build(cached);}catch{}
+ try{const response=await fetch('./weather.json',{cache:'no-cache',signal:AbortSignal.timeout(12000)});if(!response.ok)throw Error(response.status);const data=await response.json();if(!valid(data))throw Error('Snapshot incompleto');build(data);try{localStorage.setItem('intemperie:weather',JSON.stringify(data));}catch{}}
+ catch{if(snapshot){freshness();status.textContent+=' · Sin conexión: última pintura guardada.';}else{status.textContent='No pude encontrar el cielo. No voy a inventar el clima.';gallery.innerHTML='<div class="error"><p>El cielo no llegó todavía.</p><button class="retry" type="button">Volver a buscar</button></div>';gallery.querySelector('button').addEventListener('click',load);count.textContent='UY / sin datos';document.querySelector('.navigation').hidden=true;}}
+}
+gallery.addEventListener('scroll',()=>{if(desktop.matches||!snapshot)return;const i=Math.max(0,Math.min(snapshot.points.length-1,Math.round(gallery.scrollLeft/gallery.clientWidth)));if(target!==null){if(i===target)target=null;else return;}if(i!==active)select(i,false);},{passive:true});
+gallery.addEventListener('keydown',e=>{if(!snapshot||!['ArrowLeft','ArrowRight'].includes(e.key))return;e.preventDefault();select(Math.max(0,Math.min(snapshot.points.length-1,active+(e.key==='ArrowRight'?1:-1))));});
+reduced.addEventListener('change',motion);document.addEventListener('visibilitychange',()=>{motion();if(!document.hidden)freshness();});setInterval(freshness,60000);load();
