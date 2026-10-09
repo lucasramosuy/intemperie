@@ -23,6 +23,12 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm test
+      - name: Verificar sintaxis
+        run: |
+          node --check app.mjs
+          node --check paint.mjs
+          node --check snapshot.mjs
+          node --check build.mjs
   publicar:
     if: github.event_name != 'pull_request'
     needs: validar
