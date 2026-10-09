@@ -1,1 +1,16 @@
-{"name":"intemperie","version":"1.0.0","private":true,"type":"module","packageManager":"pnpm@10.18.3","scripts":{"test":"node --test test.mjs","snapshot":"node snapshot.mjs","build":"node build.mjs"},"devDependencies":{"@playwright/test":"^1.64.0"}}
+{
+  "name": "intemperie",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.18.3",
+  "scripts": {
+    "test": "node --test test.mjs",
+    "snapshot": "node snapshot.mjs",
+    "build": "node build.mjs",
+    "test:ui": "node verify-local.mjs && node verify-states.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.0"
+  }
+}
