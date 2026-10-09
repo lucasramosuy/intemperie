@@ -11,9 +11,11 @@ pnpm install --frozen-lockfile
 pnpm test
 pnpm snapshot
 pnpm build
+# Opcional: con Chromium/Chrome instalado
+pnpm test:ui
 ```
 
-Servir `dist/` con un servidor estático. Los módulos requieren HTTP, no `file://`. Todo vive bajo `/intemperie/` tanto en GitHub Pages como en la futura ruta del dominio. Los archivos fuente están en la raíz para mantener el proyecto pequeño. No hay capturas en el repo.
+Servir `dist/` con un servidor estático. Los módulos requieren HTTP, no `file://`. Todo vive bajo `/intemperie/` tanto en GitHub Pages como en la futura ruta del dominio. Los archivos fuente están en la raíz para mantener el proyecto pequeño. No hay capturas en el repo; el playtest guarda sus PNG en un directorio temporal. Licencias de las fuentes: FONT-LICENSES.txt.
 
 ## Datos y costo
 
