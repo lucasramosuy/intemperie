@@ -39,7 +39,7 @@ jobs:
       id-token: write
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url || steps.reintento.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -56,4 +56,12 @@ jobs:
           path: dist
       - name: Publicar Pages
         id: deployment
+        uses: actions/deploy-pages@v4
+        continue-on-error: true
+      - name: Esperar antes de reintentar
+        if: steps.deployment.outcome == 'failure'
+        run: sleep 30
+      - name: Publicar Pages (reintento)
+        if: steps.deployment.outcome == 'failure'
+        id: reintento
         uses: actions/deploy-pages@v4
